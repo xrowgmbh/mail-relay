@@ -26,7 +26,7 @@ RUN yum install -y epel-release
 RUN yum install -y fann redis rspamd
 
 
-RUN yum -y install postfix rsyslog;\
+RUN yum -y install postfix rsyslog telnet;\
     postconf -e inet_protocol=ipv4;\
     postconf -e relayhost=192.168.0.245;\
     postconf -e mynetworks="127.0.0.0/8 192.168.0.0/16 10.0.0.0/8 172.16.0.0/12";\
