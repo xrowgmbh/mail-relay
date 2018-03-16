@@ -1,6 +1,7 @@
 # Beware! This is a fat container. Why do we do this? Legacy applications aren't designed the microservice way. Use kubernetes for healthiness of the service
 # docker build --rm --no-cache -t mail-relay:latest .
 # docker kill mail-relay && docker rm mail-relay 
+# docker run --privileged --name mail-relay -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d mail-relay:latest
 # docker run --privileged --name mail-relay -v /sys/fs/cgroup:/sys/fs/cgroup:ro -ti mail-relay:latest bash
 
 FROM centos/systemd:latest
@@ -26,6 +27,7 @@ RUN yum install -y fann redis rspamd
 
 
 RUN yum -y install postfix rsyslog;\
+    postconf -e inet_protocol=ipv4;\
     postconf -e relayhost=192.168.0.245;\
     postconf -e mynetworks="127.0.0.0/8 192.168.0.0/16 10.0.0.0/8 172.16.0.0/12";\
     postconf -e smtpd_milters="inet:localhost:11332";\
@@ -33,6 +35,9 @@ RUN yum -y install postfix rsyslog;\
     touch /etc/postfix/virtual; \
     touch /etc/postfix/access; \
     postmap hash:/etc/postfix/virtual; \
-    postmap hash:/etc/postfix/access
-
+    postmap hash:/etc/postfix/access;\
+    systemctl enable redis;\
+    systemctl enable rspamd;\
+    systemctl enable postfix;\
+    echo 1
 EXPOSE 25
