@@ -3,8 +3,7 @@
 # docker kill mail-relay && docker rm mail-relay 
 # docker run --privileged --name mail-relay -v /sys/fs/cgroup:/sys/fs/cgroup:ro -ti mail-relay:latest bash
 
-#FROM centos/systemd:latest
-FROM centos:7
+FROM centos/systemd:latest
 
 MAINTAINER "Björn Dieding" <bjoern@xrow.de>
 
@@ -37,5 +36,3 @@ RUN yum -y install postfix rsyslog;\
     postmap hash:/etc/postfix/access
 
 EXPOSE 25
- 
-CMD ["sh", "-c", "service rsyslog start ; service postfix start ; tail -F /var/log/mail.log"]
